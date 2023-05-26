@@ -22,10 +22,4 @@ class Authorize(Resource):
             "where": f"username=\"{username}\" and password=\"{password}\""
         }
 
-        # Check
-        ret = utils.call_db(
-            event="retrieve table",
-            data=data,
-            return_type=list
-        )
-        return ret
+        return utils.call_db(event="retrieve table", data=data, return_type=list)

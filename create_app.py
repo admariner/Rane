@@ -35,4 +35,4 @@ def create(config_filename: str) -> None:
         app.config["HOST"] = host_ip
         app.config["PORT"] = 5000
         app.config["SECRET_KEY"] = "dadada"
-        app.config["uploadFolder"] = folderLocation + "/static/uploads/"
+        app.config["uploadFolder"] = f"{folderLocation}/static/uploads/"

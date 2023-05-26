@@ -15,17 +15,12 @@ def login():
         "folder": "server",
         "table": "accounts",
         "select": "username, password",
-        "where": "username = '{}'".format(username)
+        "where": f"username = '{username}'",
     }
 
-    # Check if user exists.
-    ret = utils.call_db(
-        event="retrieve table",
-        data=data,
-        return_type=list
-    )
-
-    if ret:
+    if ret := utils.call_db(
+        event="retrieve table", data=data, return_type=list
+    ):
         # Check if password is correct.
         if bcrypt.checkpw(password.encode(), ret[0][1].encode()):
             session["username"] = username

@@ -86,13 +86,8 @@ def get_rooms(data: dict) -> None:
     # user_utils.get_user_rooms(session["username"])
 
     rooms = room_utils.get_rooms()
-    section = ""
-
-    # room_utils.get_user_rooms(session["username"])
-
-    # Create div blocks for each room.
-    for room in rooms:
-        section += f"""
+    section = "".join(
+        f"""
         <div class="h-auto pb-4">
             <a class="block" onclick=\'move_room(\"{room[2]}\",\"{room[0]}\")\'>
                 <div class="card rounded-xl has-background-black p-2.5 room">
@@ -104,7 +99,8 @@ def get_rooms(data: dict) -> None:
             </a>
         </div>
         """
-
+        for room in rooms
+    )
     client_socket.emit("recieve_rooms", {"rooms": section}, broadcast=True, include_self=True)
     client_socket.emit(pong)
 
@@ -170,12 +166,12 @@ def send():
         media = files["file"]
         path = os.path.join(app.config["uploadFolder"], media.filename)
         media.save(path)
-        path = "/static/uploads/"+media.filename
+        path = f"/static/uploads/{media.filename}"
     except Exception as e:
         app.logger.info(f"Exception when uploading file: {e}")
 
     user = session["username"]
-    msg = f"[{time.asctime()}]{user}: "+html.escape(message)
+    msg = f"[{time.asctime()}]{user}: {html.escape(message)}"
 
     # Append message to room database.
     utils.call_db(

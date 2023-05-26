@@ -33,14 +33,11 @@ def db_edit(filename: str, folder: str, function: Any) -> Any:
 
 def correct_path(folder: str, filename: str) -> str:
     """Corrects the local path of a filename specified."""
-    data = os.path.dirname(os.path.abspath(__file__))+"/../data/"
+    data = f"{os.path.dirname(os.path.abspath(__file__))}/../data/"
     path = data+folder+"/"+filename
     path__ = data+folder
 
-    if os.path.exists(path__):
-        return path
-    else:
-        return data+filename
+    return path if os.path.exists(path__) else data+filename
 
 
 def db_insert(cursor: sqlite3.Cursor, table: str, columns: str, values: str, unique: bool = False) -> bool:
@@ -49,32 +46,27 @@ def db_insert(cursor: sqlite3.Cursor, table: str, columns: str, values: str, uni
         # Check if value in table if unique is True.
         if unique:
             retrieve = db_retrieve(cursor, table, f"{columns}", f"{columns}={values}")
-            if type(retrieve) == list:
-                if len(retrieve) > 0:
-                    for username in retrieve:
-                        user = values.split("\"")
-                        try:
-                            if user[1] == username:
-                                return True
-                        except IndexError:
-                            if user[0] == username:
-                                return True
-            else:
+            if type(retrieve) != list:
                 return False
 
+            if len(retrieve) > 0:
+                for username in retrieve:
+                    user = values.split("\"")
+                    try:
+                        if user[1] == username:
+                            return True
+                    except IndexError:
+                        if user[0] == username:
+                            return True
         cursor.execute(f"INSERT INTO {table} ({columns}) VALUES ({values})")
         return True
     except Exception as e:
-        if not unique:
-            # TODO Logging
-            return False
-        else:
-            return True
+        return unique
 
 
 def db_retrieve(cursor: sqlite3.Cursor, table: str, select: str, where: str) -> list:
     """Get column values of a table."""
-    if where == "":
+    if not where:
         ret = cursor.execute(f"SELECT {select} FROM {table}")
     else:
         try:

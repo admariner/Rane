@@ -59,15 +59,21 @@ def get_online() -> int:
 def online(num: int, room_id: int, silent: bool = False, testing: bool = False) -> bool:
     """Set the value of whether the user is connected to the server or not."""
     # TODO Server message
-    if not testing:
-        session = get_session()
-    else:
-        session = {"username": "Jush"}
-
+    session = get_session() if not testing else {"username": "Jush"}
     event = ""
     data = {}
     # Set to Online
-    if num == 1:
+    if num == -1:
+        event = "delete row"
+
+        data = {
+            "filename": "server_info",
+            "folder": ".",
+            "table": "online",
+            "where": f"username=\"{session['username']}\"",
+        }
+
+    elif num == 1:
         event = "append table"
 
         data = {
@@ -79,24 +85,7 @@ def online(num: int, room_id: int, silent: bool = False, testing: bool = False) 
             "unique": True
         }
 
-    # Set to Offline
-    elif num == -1:
-        event = "delete row"
-
-        data = {
-            "filename": "server_info",
-            "folder": ".",
-            "table": "online",
-            "where": f"username=\"{session['username']}\"",
-        }
-
-    returned = utils.call_db(
-        event=event,
-        data=data,
-        return_type=bool
-    )
-
-    return returned
+    return utils.call_db(event=event, data=data, return_type=bool)
 
 
 def clear_online() -> bool:
@@ -143,11 +132,8 @@ def get_account_server_role(username: str) -> str:
         return_type=list
     ))
 
-    if username in role.keys():
-        if role[username] == None:
-            return ""
-        return role[username]
-
+    if username in role:
+        return "" if role[username] is None else role[username]
     return ""
 
 
@@ -155,7 +141,7 @@ def get_account_room_role(username: str, room_id: str) -> str:
     """Get the user's assigned room role."""
 
     if type(room_id) != str:
-        raise TypeError("Invalid type: "+str(room_id))
+        raise TypeError(f"Invalid type: {room_id}")
 
     data = {
         "table": "Members",
@@ -171,10 +157,7 @@ def get_account_room_role(username: str, room_id: str) -> str:
         return_type=list
     ))
 
-    if username in role.keys():
-        return role[username]
-
-    return "Member"
+    return role.get(username, "Member")
 
 
 def convert_to_datetime(ctime: str) -> datetime:

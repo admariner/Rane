@@ -23,7 +23,7 @@ def test_online():
     ret2 = user_utils.online(-1, 0, testing=True)
 
     rss.disconnect()
-    assert (ret1 == True and ret2 == True) == True
+    assert (ret1 == True and ret2 == True)
 
 
 def test_clear_online():

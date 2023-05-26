@@ -75,7 +75,7 @@ def convert_media_to_html(path: str) -> str:
             </figure>
         """
 
-    elif path == "":
+    elif not path:
         return ""
     else:
         filename = os.path.basename(path)
@@ -97,7 +97,7 @@ def call_db(event: str, return_type: Any, **kwargs) -> Any:
     # TODO (Possibly try to change every line of code containing a space from other files to underscore)
 
     # Replace " " with "_"
-    event = "".join("_"+s for s in event.split())[1:]
+    event = "".join(f"_{s}" for s in event.split())[1:]
 
     # Find function (Quick bi-directional find)
     functions = inspect.getmembers(db, inspect.isfunction)
@@ -119,7 +119,7 @@ def call_db(event: str, return_type: Any, **kwargs) -> Any:
         back += 1
 
     # Call function
-    return False if function == None else function(kwargs["data"])
+    return False if function is None else function(kwargs["data"])
 
 
 # Here is the check_password function definition:
