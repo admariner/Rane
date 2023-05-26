@@ -23,7 +23,4 @@ def gateway() -> bool:
 
     blacklisted_users = [user[0] for user in is_blacklisted]
 
-    if ip in blacklisted_users:
-        return True
-
-    return False
+    return ip in blacklisted_users

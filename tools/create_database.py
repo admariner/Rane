@@ -14,9 +14,9 @@ for folder in remove_folders:
 
 # Create data folder and subdirectories
 os.mkdir(path)
-os.mkdir(path+"/keys/")
-os.mkdir(path+"/rooms/")
-os.mkdir(path+"/server/")
+os.mkdir(f"{path}/keys/")
+os.mkdir(f"{path}/rooms/")
+os.mkdir(f"{path}/server/")
 os.mkdir(logs)
 os.mkdir(uploads)
 
@@ -93,13 +93,13 @@ databases = {
     '''],
 }
 
-for database in databases.keys():
+for database, value in databases.items():
     db_path = path+database
 
     db = sqlite3.connect(db_path)
 
     cur = db.cursor()
-    for command in databases[database]:
+    for command in value:
         cur.execute(command)
 
     cur.close()
@@ -108,16 +108,16 @@ for database in databases.keys():
 
 
 # Create Genesis Room
-shutil.copyfile(path+"./room_template.db", path+"/rooms/0.db")
+shutil.copyfile(f"{path}./room_template.db", f"{path}/rooms/0.db")
 
-db = sqlite3.connect(path+"./rooms/0.db")
+db = sqlite3.connect(f"{path}./rooms/0.db")
 cur = db.cursor()
 cur.execute("INSERT INTO Name VALUES (\"Genesis\")")
 cur.close()
 db.commit()
 db.close()
 
-db = sqlite3.connect(path+"./rooms.db")
+db = sqlite3.connect(f"{path}./rooms.db")
 cur = db.cursor()
 cur.execute('INSERT INTO Rooms (Name, Description, ID, Public) VALUES ("Genesis", "Founding Room", "0", 1)')
 cur.close()

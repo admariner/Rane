@@ -12,27 +12,25 @@ def room(room_id: str) -> Any:
         return render_template("banned.html")
 
     if type(room_id) != str:
-        room_id = str(room_id)
+        room_id = room_id
 
     # Redirect if session is not defined.
-    if "username" not in session:
+    if "username" not in session or session["username"] == "":
         return redirect("/")
-    elif session["username"] == "":
-        return redirect("/")
-
     room_role = user_utils.get_account_room_role(session["username"], room_id)
 
     # Set jinja values.
     room_name = room_utils.get_room_name(room_id)
 
     # TODO
-    is_admin = room_role == "Room Owner" or room_role == "Room Admin"
+    is_admin = room_role in ["Room Owner", "Room Admin"]
     user_id = user_utils.get_account_info(session["username"])[4]
 
-    return render_template("chat.html",
-                           room_id=str(room_id),
-                           room_name=room_name,
-                           user_id=user_id,
-                           username=session["username"],
-                           server_ip=create_app.app.config["HOST"]
-                           )
+    return render_template(
+        "chat.html",
+        room_id=room_id,
+        room_name=room_name,
+        user_id=user_id,
+        username=session["username"],
+        server_ip=create_app.app.config["HOST"],
+    )

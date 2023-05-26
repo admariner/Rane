@@ -19,14 +19,14 @@ def autocolor(room_id: str, testing: bool = False) -> str:
 
     if role_class != "":
         span = f"<span class=\'{role_class}\'>{role}</span>"
-        username += " &lbrack;"+span+"&rbrack;"
+        username += f" &lbrack;{span}&rbrack;"
 
     # Set Room Role
     role = user_utils.get_account_room_role(session["username"], room_id)
     role_class = role.replace(" ", "_").lower()
 
     span = f"<span class=\'{role_class}\'>{role}</span>"
-    username += " ("+span+")"
+    username += f" ({span})"
 
     session["special"] = username
     return session["special"]

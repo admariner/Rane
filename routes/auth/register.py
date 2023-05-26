@@ -35,7 +35,7 @@ def register():
 
     session["register_error"] = check_password_requirements(password)
 
-    if not password == confirm_password:
+    if password != confirm_password:
         session["register_error"] = "Password and confirmation password do not match."
         return jsonify({"url": "/"})
     elif session["register_error"]:
